@@ -6,6 +6,8 @@ Capture multiple Faces from multiple users to be stored on a DataBase (dataset d
 
 import cv2
 import os
+import json
+
 
 cam = cv2.VideoCapture(0)
 cam.set(3, 640) # set video width
@@ -25,10 +27,40 @@ f_path=os.path.join(execution_path,DATASET_DIR+'/'+str(face_id))
 print(f_path)
 
 count = 0
+
+file_json_path='model.json'
+a = []
+
+entry = {'id': face_id,'name': face_name}
+
+if not os.path.isfile(file_json_path):
+    a.append(entry)
+    with open(file_json_path, mode='w') as f:
+        f.write(json.dumps(a, indent=2))
+else:
+    with open(file_json_path) as feedsjson:
+        feeds = json.load(feedsjson)
+    alredy=0    
+    for x in feeds:
+            if(x['id']==face_id):
+                alredy=1
+                break 
+    if(alredy==1):
+        key=input('\n ID Already Exists,for Retrain Press (Y), for abort press any key <return> ==>  ')
+
+    if key.upper() != "Y":
+        print('\n Aborting..........')
+        exit(0)
+   
+    feeds.append(entry)
+    with open(file_json_path, mode='w') as f:
+        f.write(json.dumps(feeds, indent=2))
+
 if(os.path.exists(f_path) == False):
     os.mkdir(f_path)
 
-while(True):
+
+while(False):
 
     ret, img = cam.read()
     # img = cv2.flip(img, -1) # flip video image vertically

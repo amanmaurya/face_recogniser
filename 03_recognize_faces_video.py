@@ -6,10 +6,11 @@
 from imutils.video import VideoStream
 import face_recognition
 import argparse
-import imutils
+import imutils,json
 import pickle
 import time
 import cv2
+file_json_path='model.json'
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -34,6 +35,14 @@ vs = VideoStream(src=0).start()
 writer = None
 time.sleep(2.0)
 
+def getName(id):
+	with open(file_json_path) as feedsjson:
+		feeds = json.load(feedsjson)
+
+	for x in feeds:
+		if(x['name']==id):
+			return x['id']
+            # break 
 # loop over frames from the video file stream
 while True:
 	# grab the frame from the threaded video stream
@@ -73,6 +82,7 @@ while True:
 			# each recognized face face
 			for i in matchedIdxs:
 				name = data["names"][i]
+				# name=getName(name)
 				counts[name] = counts.get(name, 0) + 1
 
 			# determine the recognized face with the largest number
