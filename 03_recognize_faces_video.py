@@ -1,6 +1,6 @@
 # USAGE
 # python recognize_faces_video.py --encodings encodings.pickle
-# python recognize_faces_video.py --encodings encodings.pickle --output output/jurassic_park_trailer_output.avi --display 0
+# python recognize_faces_video.py --encodings encodings.pickle --output output/out.avi --display 0
 
 # import the necessary packages
 from imutils.video import VideoStream
@@ -9,7 +9,7 @@ import argparse
 import imutils,json
 import pickle
 import time
-import cv2
+import cv2,os
 file_json_path='model.json'
 
 # construct the argument parser and parse the arguments
@@ -35,6 +35,7 @@ vs = VideoStream(src=0).start()
 writer = None
 time.sleep(2.0)
 
+# get mapping name 
 def getName(id):
 	with open(file_json_path) as feedsjson:
 		feeds = json.load(feedsjson)
@@ -43,6 +44,7 @@ def getName(id):
 		if(x['name']==id):
 			return x['id']
             # break 
+
 # loop over frames from the video file stream
 while True:
 	# grab the frame from the threaded video stream
@@ -111,6 +113,13 @@ while True:
 	# if the video writer is None *AND* we are supposed to write
 	# the output video to disk initialize the writer
 	if writer is None and args["output"] is not None:
+		DATASET_DIR='output'
+		execution_path = os.getcwd()
+
+		f_path=os.path.join(execution_path,DATASET_DIR)
+		if(os.path.exists(f_path) == False):
+		    os.mkdir(f_path)
+
 		fourcc = cv2.VideoWriter_fourcc(*"MJPG")
 		writer = cv2.VideoWriter(args["output"], fourcc, 20,
 			(frame.shape[1], frame.shape[0]), True)

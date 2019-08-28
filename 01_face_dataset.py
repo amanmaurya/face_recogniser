@@ -38,6 +38,7 @@ if not os.path.isfile(file_json_path):
     with open(file_json_path, mode='w') as f:
         f.write(json.dumps(a, indent=2))
 else:
+    key='y'
     with open(file_json_path) as feedsjson:
         feeds = json.load(feedsjson)
     alredy=0    
@@ -47,12 +48,14 @@ else:
                 break 
     if(alredy==1):
         key=input('\n ID Already Exists,for Retrain Press (Y), for abort press any key <return> ==>  ')
+    else:
+        feeds.append(entry)    
 
     if key.upper() != "Y":
         print('\n Aborting..........')
         exit(0)
    
-    feeds.append(entry)
+    
     with open(file_json_path, mode='w') as f:
         f.write(json.dumps(feeds, indent=2))
 
@@ -60,7 +63,7 @@ if(os.path.exists(f_path) == False):
     os.mkdir(f_path)
 
 
-while(False):
+while(True):
 
     ret, img = cam.read()
     # img = cv2.flip(img, -1) # flip video image vertically
@@ -75,14 +78,14 @@ while(False):
 
 
         # Save the captured image into the datasets folder
-        print(f_path,"/User.",str(count) , ".jpg")
-        cv2.imwrite(f_path+"/User."+str(count) + ".jpg", img)
+        print(f_path,"/User.",str(count),".jpg")
+        cv2.imwrite(f_path+"/User."+str(count)+".jpg", img)
         cv2.imshow('image', img)
 
     k = cv2.waitKey(100) & 0xff # Press 'ESC' for exiting video
     if k == 27:
         break
-    elif count >= 100: # Take 30 face sample and stop video
+    elif count >= 50: # Take 30 face sample and stop video
          break
 
 # Do a bit of cleanup
